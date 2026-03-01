@@ -1,3 +1,4 @@
+import java.util.Locale
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
@@ -8,8 +9,16 @@ plugins {
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
 
+fun io.papermc.paperweight.core.extension.UpstreamConfig.decideUseMirror() {
+    if (Locale.getDefault().country == "CN") {
+        val github = repo.get()
+        repo.set("https://ghproxy.imciel.com/$github")
+    }
+}
+
 paperweight {
     upstreams.paper {
+        decideUseMirror()
         ref = providers.gradleProperty("paperCommit")
 
         patchFile {
